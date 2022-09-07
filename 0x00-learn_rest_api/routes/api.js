@@ -12,7 +12,12 @@ router.get('/characters', (req, res) => {
 
 //add a character to the db
 router.post('/characters', (req, res) => {
-    res.send({type: 'POST'});
+    console.log(req.body);
+    res.send({
+        type: 'POST',
+        name: req.body.name,
+        id: req.body.id
+    });
     // res.end(); // optional
 });
 
