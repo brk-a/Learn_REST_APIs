@@ -1,4 +1,5 @@
 const express = require('express');
+const Character = require('../models/characters');
 
 // set up express app
 const router = express.Router();
@@ -12,12 +13,9 @@ router.get('/characters', (req, res) => {
 
 //add a character to the db
 router.post('/characters', (req, res) => {
-    console.log(req.body);
-    res.send({
-        type: 'POST',
-        name: req.body.name,
-        id: req.body.id
-    });
+    Character.create(req.body).then((character) => {
+            res.send(character);
+        });
     // res.end(); // optional
 });
 
@@ -27,7 +25,7 @@ router.put('/characters/:id', (req, res) => {
     // res.end(); // optional
 });
 
-//delete a charachter from db
+//delete a character from db
 router.delete('/characters/:id', (req, res) => {
     res.send({type: 'DELETE'});
     // res.end(); // optional
