@@ -1,3 +1,4 @@
+const { request } = require('express');
 const express = require('express');
 const Character = require('../models/characters');
 
@@ -21,13 +22,19 @@ router.post('/characters', (req, res, next) => {
 
 //update details of a character in db
 router.put('/characters/:id', (req, res, next) => {
-    res.send({type: 'PUT'});
+    Character.findByIdAndUpdate({_id: req.params.id}, req.body).then(() => {
+        Character.findOne({_id: req.params.id}).then((character) => {
+            res.send(character);
+        });
+    });
     // res.end(); // optional
 });
 
 //delete a character from db
 router.delete('/characters/:id', (req, res, next) => {
-    res.send({type: 'DELETE'});
+    Character.findByIdAndRemove({_id: request.params.id}).then((character) => {
+        res.send(character);
+    });
     // res.end(); // optional
 });
 
