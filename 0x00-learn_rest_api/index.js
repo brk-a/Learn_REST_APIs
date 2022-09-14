@@ -10,11 +10,17 @@ const app = express();
 mongoose.connect('mongodb://localhost/charactergo');
 mongoose.Promise = global.Promise;
 
-// set up body-parser
+// set up body-parser middleware
 app.use(bodyParser.json());
 
-//initialise routes
+//initialise routes middleware
 app.use('/api', routes);
+
+//set up error handling middleware
+app.use((err, req, res, next) => {
+    // console.log(err);
+    res.status(422).send({error: err.message});
+});
 
 //listen for requests
 app.listen(process.env.port || 3000, function(){
