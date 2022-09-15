@@ -15,5 +15,55 @@
         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
         <script src="https://unpkg.com/react@15/dist/react.js"></script>
         <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+
+        <!--React component-->
+        <script type="text/babel">
+            var Characters = React.createClass({
+                getInitialState: () => {
+                    return({
+                        characters: []
+                    });
+                },
+                render: () => {
+                    var characters = this.state.characters;
+                    characters = characters.map((character, idx) => {
+                        return(
+                            <li key={idx}>
+                                <span className={character.obj.available}></span>
+                                <span className="name">{character.obj.name}</span>
+                                <span className="profession">{character.obj.profession}</span>
+                                <span className="dist">{Math.floor(charcter.dis/1000)} km away</span>
+                            </li>
+                        );
+                    });
+                    return(
+                        <div id="character-container">
+                            <form id="search" onSubmit={this.handleSubmit}>
+                                <label for=""> Latitude</label>
+                                <input type="text" ref="lat" placeholder="latitude" required/>
+                                <label for=""> Longitude</label>
+                                <input type="text" ref="lng" placeholder="longitude" required/>
+                                <input type="submit" value="find characters"/>
+                            </form>
+                            <ul>{characters}</ul>
+                        </div>
+                    );
+                },
+                handleSubmit: (e) => {
+                    e.preventDefault();
+                    var lng = this.refs.lng.value;
+                    var lat = this.refs.lat.value;
+                    fetch('/api/characters?lng='+lng+'&lat='+lat).then((data) => {
+                        return data.json();
+                    }).then((json) => {
+                        this.setState({
+                            characters: json
+                        });
+                    });
+                }
+            });
+
+            ReactDOM.render(<Characters />, document.getElementById("characters"));
+        </script>
     </body>
 </html>
