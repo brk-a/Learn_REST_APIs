@@ -1,6 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+//create geo-location Schema & model
+const GeoSchema = new Schema({
+    type: {
+        type: String,
+        default: "Point"
+    },
+    coordinates: {
+        type: [Number],
+        index: "2dsphere"
+    }
+});
+
 //create a character Schema & model
 const CharacterSchema = new Schema({
     name: {
@@ -15,9 +27,8 @@ const CharacterSchema = new Schema({
         type: Boolean,
         default: false,
         required: [true, 'Available field is required']
-    }
-
-    //will add in geo-location
+    },
+    geometry: GeoSchema
 });
 
 const Character = mongoose.model('character', CharacterSchema);
