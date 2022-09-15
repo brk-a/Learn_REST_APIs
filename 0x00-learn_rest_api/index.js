@@ -10,6 +10,9 @@ const app = express();
 mongoose.connect('mongodb://localhost/charactergo');
 mongoose.Promise = global.Promise;
 
+//set up static middleware
+app.use(express.static('public'));
+
 // set up body-parser middleware
 app.use(bodyParser.json());
 
