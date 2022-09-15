@@ -8,7 +8,13 @@ const router = express.Router();
 
 //get a list of characters from the db
 router.get('/characters', (req, res, next) => {
-    res.send({type: 'GET'});
+    // Character.find({}).then((character) => { res.send(character)});
+    Character.geoNear(
+        {type: "Point", coordinates:[parseFloat(req.query.lng), parsefloat(req.query.lat)]},
+        {maxDistance: 100000, spherical: true}
+    ).then((character) => {
+        res.send(character);
+    });
     // res.end(); // optional
 });
 
