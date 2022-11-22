@@ -64,6 +64,8 @@ router.get('/', (req, res) => {
     res.send('You are at `/users`')
 })
 
-router.post('/')
+router.post('/', (req, res) => {
+    
+})
 
 export default router
