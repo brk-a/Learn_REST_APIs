@@ -85,4 +85,10 @@ router.get('/:id', (req, res) => {
     res.send(`GET request responded with id ${foundUser.id}`)
 })
 
+router.delete('/:id', (req, res) => {
+    const {id} = req.params
+    const users = users.filter((user) => user.id !== id)
+    res.send(`DELETE request deleted id ${foundUser.id}`)
+})
+
 export default router
