@@ -1,7 +1,7 @@
 import express from 'express'
-import {v4 as uuid4} from 'uuid'
+import {createUser, getUsers, getUser, updateUser, deleteUser} from '../controllers/users.js'
 
-const users = [
+let users = [
     {
         fname: 'Goat',
         lname: 'Matata',
@@ -68,27 +68,10 @@ const router = express.Router()
  * Example: `router.get('/', (req, res) ...` tells us that
  * the URL is `https://example.co.ke/users`
 */
-router.get('/', (req, res) => {
-    console.log(users)
-    res.send('You are at `/users`')
-})
-
-router.post('/', (req, res) => {
-    const new_user = req.body
-    users.push({...new_user, id: uuid4()})
-    res.send(`User id: ${new_user.id}, ${new_user.fname} ${new_user.lname}, has been added to database`)
-})
-
-router.get('/:id', (req, res) => {
-    const {id} = req.params
-    const foundUser = users.find((user) => user.id === id)
-    res.send(`GET request responded with id ${foundUser.id}`)
-})
-
-router.delete('/:id', (req, res) => {
-    const {id} = req.params
-    const users = users.filter((user) => user.id !== id)
-    res.send(`DELETE request deleted id ${foundUser.id}`)
-})
+router.get('/', getUsers)
+router.post('/', createUser)
+router.get('/:id', getUser)
+router.delete('/:id', deleteUser)
+router.patch('/:id', updateUser)
 
 export default router
