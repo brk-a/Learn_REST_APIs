@@ -84,12 +84,13 @@ export const deleteUser = (req, res) => {
 
 export const updateUser = (req, res) => {
     const {id} = req.params
-    const {fname, lname, age} = req.body
+    const {fname, lname, role, organisation} = req.body
     const userToUpdate = users.find((user) => user.id === id)
 
     if (fname) userToUpdate.fname = fname
     if (lname) userToUpdate.lname = lname
-    if (age) userToUpdate.age = age
+    if (role) userToUpdate.role = role
+    if (organisation) userToUpdate.organisation = organisation
 
     res.send(`PATCH request updated id ${userToUpdate.id}`)
 }
