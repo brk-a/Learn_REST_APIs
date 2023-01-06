@@ -17,4 +17,8 @@ router.get('/person/:name', (req, res) => {
     res.send(`You requested person ${req.params.name}`)
 })
 
+//route that throws an error (so error-500.html will be served)
+router.get('/error', (req, res) => {
+    throw new Error('This error is thrown intentionally.')
+})
 module.exports = router
