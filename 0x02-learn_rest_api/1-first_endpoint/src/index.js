@@ -1,18 +1,24 @@
 let express = require('express')
-let personRoute = require('./routes/person')
 let path = require('path')
+let bodyParser = require('body-parser')
+
+let personRoute = require('./routes/person')
+let customerRoute = require('./routes/customer')
 
 const PORT = process.env.PORT || 3000
 
 let app = express()
 
+app.use(bodyParser.json())
+
 app.use((req, res, next) => {
-    console.log(`${new Date().toString()}: ${req.originalUrl}`)
+    console.log(`${new Date().toString()}: ${req.originalUrl}, ${req.body}`)
     // res.send('Use `res` or `next` but not both')
     next()
 })
 app.use(express.static('public'))
 app.use(personRoute)
+app.use(customerRoute)
 
 //handler for 404 - Resource Not Found
 app.use((req, res, next) => {
