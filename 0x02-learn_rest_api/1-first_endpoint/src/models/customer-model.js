@@ -1,5 +1,5 @@
 let mongoose = require('mongoose')
-const { required } = require('nodemon/lib/config')
+// const { required } = require('nodemon/lib/config')
 
 const server = process.env.SERVER
 const database = process.env.DATABASE
@@ -11,7 +11,7 @@ mongoose.connect(`mongodb://${user}:${password}@${server}/${database}`)
 let CustomerSchema = new mongoose.Schema({
     name: {
         type: String,
-        require: true
+        required: true
     },
     email: {
         type: String,
