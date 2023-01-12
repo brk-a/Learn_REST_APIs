@@ -1,8 +1,13 @@
+'''
+Docstring will be completed later
+'''
+
 from fastapi import FastAPI
 from fastapi.params import Body
 # from box import Box #use dot notation to access values in a dictionary w/o using the class below
 from pydantic import BaseModel
 from typing import Optional
+from random import randrange
 
 
 # class AttributeDict(dict):
@@ -20,29 +25,43 @@ class Post(BaseModel):
     rating: Optional[int] = None
 
 
-
 app = FastAPI()
+all_posts = [
+    {'title': 'Title 0', 'content': 'Content 0', 'id': 0},
+    {'title': 'Title 1', 'content': 'Content 1', 'id': 1}
+]
 
 
 @app.get('/')
 async def root():
-    return {"message": "Hello, world!"}
+    """display `Hello World` message"""
+    return {'message': 'Hello, World'}
 
 
 @app.get('/posts')
 def get_posts():
-    return {"data": "This is a sample post"}
+    """ fetch all posts"""
+    return {"data": all_posts}
 
 
-@app.post('/createpost')
-def create_post(new_post: Post):
-    # new_post = AttributeDict(new_post) #IFF you use class AttributeDict
-    # new_post = Box(new_post) #IFF you use Box
-    print(new_post)
-    return {
-        "message": "Post created successfully",
-        "title": f"title: {new_post.title}", #instead of new_post['title']
-        "content": f"content: {new_post.content}", #instead of new_post['content']
-        "published": f"published: {new_post.published}",
-        "rating": f"rating: {new_post.rating}"
-    }
+@app.post('/posts')
+def create_post(post: Post):
+    """create a post"""
+    # posts = AttributeDict(posts) #IFF you use class AttributeDict
+    # posts = Box(posts) #IFF you use Box
+    post_dict = post.dict()
+    post_dict['id'] = randrange(0, 1000000000000)
+    all_posts.append(post_dict)
+    # return {
+    #     "message": "Post created successfully",
+    #     "title": f"title: {post.title}", #instead of post['title']
+    #     "content": f"content: {post.content}", #instead of post['content']
+    #     "published": f"published: {post.published}",
+    #     "rating": f"rating: {post.rating}"
+    # }
+    return{"data": post_dict}
+
+
+@app.get('posts/{id}')
+def get_post():
+    """fetch one post by id"""
