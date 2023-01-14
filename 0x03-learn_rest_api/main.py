@@ -27,8 +27,8 @@ class Post(BaseModel):
 
 app = FastAPI()
 all_posts = [
-    {'title': 'Title 0', 'content': 'Content 0', 'id': 0},
-    {'title': 'Title 1', 'content': 'Content 1', 'id': 1}
+    {'title': 'Title 0', 'content': 'Content 0', 'pseudo_id': 0},
+    {'title': 'Title 1', 'content': 'Content 1', 'pseudo_id': 1}
 ]
 
 
