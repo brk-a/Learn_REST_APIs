@@ -63,5 +63,6 @@ def create_post(post: Post):
 
 
 @app.get('posts/{id}')
-def get_post():
+def get_post(id: int):
     """fetch one post by id"""
+    return {"post_detail": f'Here is post {id}'}
