@@ -72,6 +72,19 @@ def get_post(id: int, response: Response):
     return {"post_detail": f'Here is post {id}'}
 
 @app.put('/posts/{id}')
-def edit_post(id: int):
+def update_post(id: int, post: Post):
     """edit a post"""
-    return {"post_detail": f'The post with id {id} was edited'}
+    if not id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Post with id {id} was not found')
+    
+    post_dict = post.dict()
+    post_dict['pseudo_id'] = id
+    all_posts.append(post_dict)
+    print(post)
+    return {"data": post_dict}
+
+
+@app.delete('/posts/{id}')
+def delete_post(id: int):
+    """delete a post"""
+    return {"post_detail": f'The post with id {id} was deleted'}, Response(status_code=status.HTTP_204_NO_CONTENT)
