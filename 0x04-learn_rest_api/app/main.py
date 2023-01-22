@@ -75,7 +75,6 @@ def update_post(id: int, post: Post):
     return {"updated post": updated_post}, Response(status_code=status.HTTP_201_CREATED)
         
 
-
 @app.delete("/posts/{id}")
 def delete_post(id: int):
     """delete one post"""
