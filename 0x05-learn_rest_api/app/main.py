@@ -1,16 +1,12 @@
+'''
+main
+'''
+
 from fastapi import FastAPI, Depends, status, Response, HTTPException
-from . import models
+from . import models, schemas
 from .database import engine, get_db
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
 from psycopg2.extras import RealDictCursor
-
-
-class Post(BaseModel):
-    """ pydantic schema of a post"""
-    title: str
-    content: str
-    published: bool = True
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -25,7 +21,7 @@ def test_posts(db: Session=Depends(get_db)):
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post: Post, db: Session=Depends(get_db)):
+def create_post(post: schemas.PostCreate, db: Session=Depends(get_db)):
     """create a post"""
     new_post = models.Post(**post.dict())
     db.add(new_post)
@@ -52,7 +48,7 @@ def get_post(id: int, db: Session=Depends(get_db)):
 
 
 @app.put("/posts/{id}")
-def update_post(id: int, post: Post, db: Session=Depends(get_db)):
+def update_post(id: int, post: schemas.PostUpdate, db: Session=Depends(get_db)):
     """update one post"""
     post_query = db.query(models.Post).filter(models.Post.id ==  id)
     post_data = post_query.first()

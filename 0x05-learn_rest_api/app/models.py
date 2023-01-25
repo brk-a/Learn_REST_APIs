@@ -1,3 +1,9 @@
+'''
+Set up all schemas 
+(sqlalchemy models)
+used by the db
+'''
+
 from .database import Base
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.sql.sqltypes import TIMESTAMP
