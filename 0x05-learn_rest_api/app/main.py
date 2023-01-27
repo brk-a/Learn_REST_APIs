@@ -3,7 +3,7 @@ main
 '''
 
 from fastapi import FastAPI, Depends, status, Response, HTTPException
-from . import models, schemas
+from . import models, schemas, utils
 from .database import engine, get_db
 from sqlalchemy.orm import Session
 from psycopg2.extras import RealDictCursor
@@ -21,7 +21,7 @@ def test_posts(db: Session=Depends(get_db)):
     return success_msg, Response(status_code=status.HTTP_200_OK)
 
 
-@app.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.ResponseBase)
+@app.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponseBase)
 def create_post(post: schemas.PostCreate, db: Session=Depends(get_db)):
     """create a post"""
     new_post = models.Post(**post.dict())
@@ -31,14 +31,14 @@ def create_post(post: schemas.PostCreate, db: Session=Depends(get_db)):
     return new_post
 
 
-@app.get("/posts", response_model=List[schemas.ResponseBase])
+@app.get("/posts", response_model=List[schemas.PostResponseBase])
 def get_posts(db: Session=Depends(get_db)):
     """fetch all posts"""
     posts = db.query(models.Post).all()
     return posts
 
 
-@app.get("/posts/{id}", response_model=schemas.ResponseBase)
+@app.get("/posts/{id}", response_model=schemas.PostResponseBase)
 def get_post(id: int, db: Session=Depends(get_db)):
     """fetch one post"""
     post = db.query(models.Post).filter(models.Post.id == id).first()
@@ -48,7 +48,7 @@ def get_post(id: int, db: Session=Depends(get_db)):
     return post
 
 
-@app.put("/posts/{id}", response_model=schemas.ResponseBase)
+@app.put("/posts/{id}", response_model=schemas.PostResponseBase)
 def update_post(id: int, post: schemas.PostUpdate, db: Session=Depends(get_db)):
     """update one post"""
     post_query = db.query(models.Post).filter(models.Post.id ==  id)
@@ -62,7 +62,7 @@ def update_post(id: int, post: schemas.PostUpdate, db: Session=Depends(get_db)):
     return updated_post      
 
 
-@app.delete("/posts/{id}", response_model=schemas.ResponseBase)
+@app.delete("/posts/{id}", response_model=schemas.PostResponseBase)
 def delete_post(id: int, db: Session=Depends(get_db)):
     """delete one post"""
     post_query = db.query(models.Post).filter(models.Post.id == id)
@@ -73,3 +73,29 @@ def delete_post(id: int, db: Session=Depends(get_db)):
     db.delete(synchronize_session=False)
     db.commit()
     return {"deleted_post": deleted_post}, Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponseBase)
+def create_user(user: schemas.UserCreate, db: Session=Depends(get_db)):
+    """create a user"""
+
+    #hash the password for security purposes
+    hashed_password = utils.hash_passwd(user.password)
+    user.password = hashed_password
+
+    new_user = models.User(**user.dict())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
+
+
+@app.get("/users/{id}", response_model=schemas.UserResponseBase)
+def get_user(id: int, db: Session=Depends(get_db)):
+    """fetch one user"""
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'user with id {id} was not found')
+    return user
