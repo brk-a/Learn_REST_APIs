@@ -8,7 +8,7 @@ from ..database import get_db
 from sqlalchemy.orm import Session
 from typing import List
 
-router = APIRouter()
+router = APIRouter(prefix="/posts", tags=['Posts'])
 
 
 @router("/sqlalchemy")
@@ -18,7 +18,7 @@ def test_posts(db: Session=Depends(get_db)):
     return success_msg, Response(status_code=status.HTTP_200_OK)
 
 
-@router.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponseBase)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponseBase)
 def create_post(post: schemas.PostCreate, db: Session=Depends(get_db)):
     """create a post"""
     new_post = models.Post(**post.dict())
@@ -28,14 +28,14 @@ def create_post(post: schemas.PostCreate, db: Session=Depends(get_db)):
     return new_post
 
 
-@router.get("/posts", response_model=List[schemas.PostResponseBase])
+@router.get("/", response_model=List[schemas.PostResponseBase])
 def get_posts(db: Session=Depends(get_db)):
     """fetch all posts"""
     posts = db.query(models.Post).all()
     return posts
 
 
-@router.get("/posts/{id}", response_model=schemas.PostResponseBase)
+@router.get("/{id}", response_model=schemas.PostResponseBase)
 def get_post(id: int, db: Session=Depends(get_db)):
     """fetch one post"""
     post = db.query(models.Post).filter(models.Post.id == id).first()
@@ -45,7 +45,7 @@ def get_post(id: int, db: Session=Depends(get_db)):
     return post
 
 
-@router.put("/posts/{id}", response_model=schemas.PostResponseBase)
+@router.put("/{id}", response_model=schemas.PostResponseBase)
 def update_post(id: int, post: schemas.PostUpdate, db: Session=Depends(get_db)):
     """update one post"""
     post_query = db.query(models.Post).filter(models.Post.id ==  id)
@@ -59,7 +59,7 @@ def update_post(id: int, post: schemas.PostUpdate, db: Session=Depends(get_db)):
     return updated_post      
 
 
-@router.delete("/posts/{id}", response_model=schemas.PostResponseBase)
+@router.delete("/{id}", response_model=schemas.PostResponseBase)
 def delete_post(id: int, db: Session=Depends(get_db)):
     """delete one post"""
     post_query = db.query(models.Post).filter(models.Post.id == id)
