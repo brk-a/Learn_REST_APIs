@@ -62,3 +62,13 @@ class UserResponseBase(UserBase):
     class Config:
         """tells pydantic to read data even if it is not a `dict`"""
         orm_mode = True
+
+
+class LoginBase(BaseModel):
+    """pydantic schema of a request to `/login` endpoint"""
+    email: EmailStr
+    password: str
+
+    # class Config:
+    #     """tells pydantic to read data even if it is not a `dict`"""
+    #     orm_mode = True
