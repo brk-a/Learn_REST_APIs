@@ -6,6 +6,7 @@ used by the API
 
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from typing import Optional
 
 
 # class Post(BaseModel):
@@ -72,3 +73,22 @@ class LoginBase(BaseModel):
     # class Config:
     #     """tells pydantic to read data even if it is not a `dict`"""
     #     orm_mode = True
+
+
+class Token(BaseModel):
+    """pydantic schema of a JWT  from `/login` endpoint"""
+    access_token: str
+    token_type: str
+
+    class Config:
+        """tells pydantic to read data even if it is not a `dict`"""
+        orm_mode = True
+
+
+class TokenData(BaseModel):
+    """pydantic schema of data in a JWT from `/login` endpoint"""
+    id: Optional[str] =  None
+
+    class Config:
+        """tells pydantic to read data even if it is not a `dict`"""
+        orm_mode = True
