@@ -29,14 +29,14 @@ def create_post(post: schemas.PostCreate, db: Session=Depends(get_db), get_curre
 
 
 @router.get("/", response_model=List[schemas.PostResponseBase])
-def get_posts(db: Session=Depends(get_db)):
+def get_posts(db: Session=Depends(get_db), get_current_user : int=Depends(oauth2.get_current_user)):
     """fetch all posts"""
     posts = db.query(models.Post).all()
     return posts
 
 
 @router.get("/{id}", response_model=schemas.PostResponseBase)
-def get_post(id: int, db: Session=Depends(get_db)):
+def get_post(id: int, db: Session=Depends(get_db), get_current_user : int=Depends(oauth2.get_current_user)):
     """fetch one post"""
     post = db.query(models.Post).filter(models.Post.id == id).first()
     if not post:
@@ -46,7 +46,7 @@ def get_post(id: int, db: Session=Depends(get_db)):
 
 
 @router.put("/{id}", response_model=schemas.PostResponseBase)
-def update_post(id: int, post: schemas.PostUpdate, db: Session=Depends(get_db)):
+def update_post(id: int, post: schemas.PostUpdate, db: Session=Depends(get_db), get_current_user : int=Depends(oauth2.get_current_user)):
     """update one post"""
     post_query = db.query(models.Post).filter(models.Post.id ==  id)
     post_data = post_query.first()
@@ -60,7 +60,7 @@ def update_post(id: int, post: schemas.PostUpdate, db: Session=Depends(get_db)):
 
 
 @router.delete("/{id}", response_model=schemas.PostResponseBase)
-def delete_post(id: int, db: Session=Depends(get_db)):
+def delete_post(id: int, db: Session=Depends(get_db), get_current_user : int=Depends(oauth2.get_current_user)):
     """delete one post"""
     post_query = db.query(models.Post).filter(models.Post.id == id)
     deleted_post = post_query.first()
