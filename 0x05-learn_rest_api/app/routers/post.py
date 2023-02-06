@@ -21,7 +21,7 @@ def test_posts(db: Session=Depends(get_db)):
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponseBase)
 def create_post(post: schemas.PostCreate, db: Session=Depends(get_db), get_current_user : int=Depends(oauth2.get_current_user)):
     """create a post"""
-    new_post = models.Post(**post.dict())
+    new_post = models.Post(owner_id=get_current_user.id, **post.dict())
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
@@ -53,6 +53,9 @@ def update_post(id: int, post: schemas.PostUpdate, db: Session=Depends(get_db), 
     if not post_data:
          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
             detail=f'post with id {id} was not found')
+    if get_current_user.id != post_data.owner_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+            detail=f'post cannot be updated')
     post_query.update(post.dict(), synchronize_session=False)
     db.commit()
     updated_post = post_query.first()
@@ -67,6 +70,9 @@ def delete_post(id: int, db: Session=Depends(get_db), get_current_user : int=Dep
     if not deleted_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
             detail=f'post with id {id} was not found')
-    db.delete(synchronize_session=False)
+    if get_current_user.id != deleted_post.owner_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+            detail=f'post cannot be deleted')
+    post_query.delete(synchronize_session=False)
     db.commit()
     return {"deleted_post": deleted_post}, Response(status_code=status.HTTP_204_NO_CONTENT)

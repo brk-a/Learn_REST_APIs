@@ -16,6 +16,28 @@ from typing import Optional
 #     published: bool = True
 
 
+class UserBase(BaseModel):
+    """pydantic schema of a user"""
+    email: EmailStr
+    password: str
+    created_at: datetime
+
+
+class UserCreate(UserBase):
+    """create a user: pydantic schema"""
+    pass
+
+
+class UserResponseBase(UserBase):
+    """pydantic schema of a response from `/users` endpoint"""
+    email: EmailStr
+    created_at: datetime
+
+    class Config:
+        """tells pydantic to read data even if it is not a `dict`"""
+        orm_mode = True
+
+
 class PostBase(BaseModel):
     """ pydantic schema of a post"""
     title: str
@@ -35,30 +57,10 @@ class PostUpdate(PostBase):
 
 class PostResponseBase(PostBase):
     """pydantic schema of a response from `/posts` endpoint"""
-    #id: int
+    id: int
     created_at: datetime
-
-    class Config:
-        """tells pydantic to read data even if it is not a `dict`"""
-        orm_mode = True
-
-
-class UserBase(BaseModel):
-    """pydantic schema of a user"""
-    email: EmailStr
-    password: str
-    created_at: datetime
-
-
-class UserCreate(UserBase):
-    """create a user: pydantic schema"""
-    pass
-
-
-class UserResponseBase(UserBase):
-    """pydantic schema of a response from `/users` endpoint"""
-    email: EmailStr
-    created_at: datetime
+    owner_id: int
+    owner: UserBase
 
     class Config:
         """tells pydantic to read data even if it is not a `dict`"""
