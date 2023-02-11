@@ -4,7 +4,7 @@ Set up all schemas
 used by the API
 '''
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, conint
 from datetime import datetime
 from typing import Optional
 
@@ -94,3 +94,9 @@ class TokenData(BaseModel):
     class Config:
         """tells pydantic to read data even if it is not a `dict`"""
         orm_mode = True
+
+
+class Vote(BaseModel):
+    """pydantic schema of data to be sent from `/vote` endpoint"""
+    post_id: int
+    vote_dir: conint(ge=0,le=1)
