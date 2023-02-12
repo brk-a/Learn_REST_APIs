@@ -10,11 +10,11 @@ router = APIRouter(prefix="/vote", tags=['Vote'])
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def vote(vote:schemas.Vote, db: Session=Depends(database.get_db), get_current_user: int=Depends(oauth2.get_current_user)):
-    """get all votes"""
+    """upvote or downvote a post"""
     vote_query = db.query(models.Vote).filter(vote.post_id == models.Vote.post_id,
         get_current_user.id == models.Vote.user_id)
     found_vote = vote_query.first()
-    if vote.dir == 1:
+    if vote.vote_dir == 1:
         if found_vote:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                 detail=f"user {get_current_user.id} already liked post {vote.post_id}")
@@ -28,4 +28,4 @@ def vote(vote:schemas.Vote, db: Session=Depends(database.get_db), get_current_us
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"does not exist")
         vote_query.delete(synchronize_session=False)
         db.commit()
-        return {"message": "vote deletes successfully"}, Response(status_code=status.HTTP_204_NO_CONTENT)
+        return {"message": "vote deleted successfully"}, Response(status_code=status.HTTP_204_NO_CONTENT)
