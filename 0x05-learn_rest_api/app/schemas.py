@@ -2,6 +2,7 @@
 Set up all schemas 
 (pydantic models)
 used by the API
+as endpoints
 '''
 
 from pydantic import BaseModel, EmailStr, conint

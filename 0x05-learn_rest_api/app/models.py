@@ -1,7 +1,7 @@
 '''
 Set up all models 
 (sqlalchemy schemas)
-of the DBs containg various items
+of the DBs containing various items
 '''
 
 from .database import Base
