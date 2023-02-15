@@ -68,6 +68,16 @@ class PostResponseBase(PostBase):
         orm_mode = True
 
 
+class PostResponseJoinVote(PostBase):
+    """pydantic schema of the table made by joining `Post` and `Vote`"""
+    Post: PostResponseBase
+    votes: int
+
+    class Config:
+        """tells pydantic to read data even if it is not a `dict`"""
+        orm_mode = True
+
+
 class LoginBase(BaseModel):
     """pydantic schema of a request to `/login` endpoint"""
     email: EmailStr
